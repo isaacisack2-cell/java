@@ -39,7 +39,7 @@ public class FileManager {
             }
         }catch(IOException e){
             System.out.println("[*] Error");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
@@ -72,7 +72,7 @@ public class FileManager {
             }
         }catch(IOException e){
             System.out.println("[*] Error during writing");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
@@ -105,7 +105,7 @@ public class FileManager {
             }
         }catch(IOException e){
             System.out.println("[*] Error while reading in file");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
@@ -127,7 +127,7 @@ public class FileManager {
             }
         }catch(Exception e){
             System.out.println("[*] Unknown Error");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
@@ -156,7 +156,7 @@ public class FileManager {
             }
         }catch(Exception e){
             System.out.println("[*] Failed to display your files");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
@@ -176,34 +176,34 @@ public class FileManager {
             }
         }catch(Exception e){
             System.out.println("[*] Unknown Error");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     
     public static void Rename_file(){
         try{
             System.out.print("Enter name of file to rename: ");
-            String OldFileName = kbd.nextLine();
-            File MyOldFile = new File(OldFileName);
-            if(MyOldFile.exists()){
-                System.out.print("Enter new file name to rename "+OldFileName+": ");
+            String FileName = kbd.nextLine();
+            File MyFile = new File(FileName);
+            if(MyFile.exists()){
+                System.out.print("Enter new file name to rename "+FileName+": ");
                 String NewFileName = kbd.nextLine();
-                File MyNewFile = new File(NewFileName);
-                if(!MyNewFile.exists()){
-                    if(MyOldFile.renameTo(MyNewFile)){
-                        System.out.println("File renamed from "+OldFileName+" to "+NewFileName);
-                        MyFiles.remove(OldFileName);
-                        MyFiles.add(NewFileName);
-                    }else{
-                        System.out.println("Failed to rename please try again ");
-                        Rename_file();
-                    }
+                File MyFileNew = new File(NewFileName);
+                FileWriter FileWritter = new FileWriter(NewFileName,true);
+                if(MyFile.length == 0){
+                    MyFile.delete();
                 }else{
-                    System.out.println("File named "+NewFileName+" already exists");
-                    Rename_file();
+                    Scanner FileReader = new Scanner(MyFile);
+                    String text;
+                    while(FileReader.hasNextLine()){
+                        text = FileReader.nextLine();
+                        FileWritter.write(text + System.lineSeparator());
+                    }
+                    System.out.println("File renamed from "+FileName+" to "+NewFileName());
+                    MyFile.delete();
                 }
             }else{
-                System.out.println("File does not found \ntry again and Make sure the name is correct");
+                System.out.println("File does not found \ntry again");
                 Rename_file();
             }
         }catch(Exception e){
@@ -212,51 +212,6 @@ public class FileManager {
         }
     }
     
-    public static void Update_file(){
-        try{
-            System.out.print("Enter name of file to update: ");
-            String FileName = kbd.nextLine();
-            File MyFile = new File(FileName);
-
-            if(!MyFile.exists()){
-                System.out.println("File "+FileName+" Does not found");
-                return;
-            }
-
-            Scanner reader = new Scanner(MyFile);
-            String text,textOld,textNew;
-            ArrayList<String> lines = new ArrayList<String>();
-
-            while(reader.hasNextLine()){
-                text = reader.nextLine();
-                System.out.println(text);
-                lines.add(text);
-            }
-            reader.close();
-
-            if(lines.size() == 0){
-                System.out.println("File is empty, nothing to update");
-                return;
-            }
-
-            System.out.print("Enter targeted text from above to update: ");
-            textOld= kbd.nextLine();
-            System.out.print("Enter new text: ");
-            textNew = kbd.nextLine();
-
-            FileWriter writer = new FileWriter(FileName);
-            for(int i = 0; i <= lines.size() - 1; i++){
-                lines.set(i,lines.get(i).replace(textOld,textNew));
-                writer.write(lines.get(i)+System.lineSeparator());
-            }
-            System.out.println("File updated !");
-            writer.close();
-
-        }catch(Exception e){
-            System.out.println("[*] Unknown error occured");
-        }
-    }
-
     public static void Menu(){
         int choice = 0;
         do{
@@ -296,10 +251,6 @@ public class FileManager {
                         Rename_file();
                         hr();
                         break;
-                    case 6:
-                        Update_file();
-                        hr();
-                        break;
                     case 7:
                         Search_file();
                         hr();
@@ -318,6 +269,7 @@ public class FileManager {
             }catch(Exception e){
                 System.out.println("[*] Error occured");
                 System.out.println("Write a number and not a text");
+                e.printStackTrace();
                 return;
             }
             
